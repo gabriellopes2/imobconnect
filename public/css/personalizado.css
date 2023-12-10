@@ -1,0 +1,170 @@
+/* Estilo personalizado para alinhar a seta à direita no botão */
+
+.btn.dropdown-toggle::after {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  
+  /* Estilo adicional para garantir que o texto não sobreponha a seta */
+  
+  .btn.dropdown-toggle {
+    position: relative;
+    padding-right: 30px;
+  }
+
+  .ref-badge-container {
+    position: relative; /* Este é o contêiner para os badges */
+    display: inline-block; /* Isso mantém o tamanho do contêiner ajustado ao conteúdo */
+}
+
+.ref-badge-container {
+  position: absolute; /* Posiciona o contêiner de badges em relação ao elemento pai */
+  top: 5px; /* Alinha o topo do contêiner com o topo do elemento pai */
+  right: 5px; /* Alinha o lado esquerdo do contêiner com o lado esquerdo do elemento pai */
+  z-index: 10; /* Garante que o contêiner fique acima da imagem */
+}
+
+.ref-badge-venda {
+  display: block; /* Cada badge será exibido em sua própria linha */
+  background-color: #32a850; /* Exemplo de cor de fundo, ajuste conforme necessário */
+  color: white; /* Cor do texto, ajuste conforme necessário */
+  padding: 0.25em 0.5em; /* Espaçamento interno do badge */
+  margin-top: 2px; /* Espaçamento entre os badges */
+  font-size: 0.75em; /* Tamanho da fonte, ajuste conforme necessário */
+  border-radius: 0.25em; /* Arredondamento das bordas */
+  width: auto; /* Largura automática baseada no conteúdo */
+  text-align: center;
+}
+
+.ref-badge-aluguel {
+  display: block; /* Cada badge será exibido em sua própria linha */
+  background-color: #d65b09; /* Exemplo de cor de fundo, ajuste conforme necessário */
+  color: white; /* Cor do texto, ajuste conforme necessário */
+  padding: 0.25em 0.5em; /* Espaçamento interno do badge */
+  margin-top: 2px; /* Espaçamento entre os badges */
+  font-size: 0.75em; /* Tamanho da fonte, ajuste conforme necessário */
+  border-radius: 0.25em; /* Arredondamento das bordas */
+  width: auto; /* Largura automática baseada no conteúdo */
+  text-align: center;
+}
+
+
+
+.filter-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 10px;
+  padding: 10px;
+  background: #f5f5f5;
+}
+
+.filter-item {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
+  background: #fff;
+}
+
+.filter-button {
+  grid-column: span 2;
+  background: #f00;
+  color: #fff;
+  text-align: center; /* Centraliza o texto horizontalmente */
+  font-weight: bold; /* Torna o texto em negrito */
+  font-size: 1.2em; /* Aumenta o tamanho da fonte, ajuste conforme necessário */
+  display: flex; /* Usa Flexbox para alinhamento */
+  align-items: center; /* Centraliza o conteúdo verticalmente */
+  justify-content: center; /* Centraliza o conteúdo horizontalmente */
+  padding: 10px 0; /* Adiciona um pouco de padding vertical se necessário */
+}
+
+.more-filters {
+  grid-column: span 2;
+  background: #eee;
+  text-align: left;
+}
+
+@media (max-width: 600px) {
+  .filter-container {
+    grid-template-columns: 1fr;
+  }
+  .filter-button,
+  .more-filters {
+    grid-column: span 1;
+  }
+}
+
+.filter-item select {
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+}
+
+.filter-item label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.range-slider {
+  position: relative;
+  width: 100%;
+  padding: 0 20px; /* Adiciona padding para evitar que os polegares ultrapassem a largura da barra */
+}
+
+.range-slider input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%; /* Ajuste para que a largura seja baseada no contêiner com padding */
+  background: transparent;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.range-slider::before {
+  content: '';
+  height: 5px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #ddd;
+  border-radius: 5px;
+  z-index: 1;
+}
+
+.range-slider input[type="range"].lower {
+  background-color: transparent;
+}
+
+.range-slider input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: #007bff;
+  cursor: pointer;
+  pointer-events: all;
+  position: relative;
+  z-index: 3;
+  margin-left: -50%; /* Ajusta para a metade da largura do polegar para centralizar */
+}
+
+.range-slider input[type="range"]:first-of-type {
+  z-index: 4;
+}
+/* Adicione estilos para outros navegadores se necessário */
+input[type="range"]::-moz-range-thumb {
+  /* Estilos para o polegar no Firefox */
+}
+
+input[type="range"]::-ms-thumb {
+  /* Estilos para o polegar no IE/Edge */
+}
+
+/* Estilos adicionais se necessário */
