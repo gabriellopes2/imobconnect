@@ -45,4 +45,3 @@
 <script src="/js/baguetteBox.min.js"></script>
 <script src="/js/vanilla-zoom.js"></script>
 <script src="/js/theme.js"></script>
-<script src="/js/personalizado.js"></script>

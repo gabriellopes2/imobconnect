@@ -44,7 +44,11 @@
                                 <div style="width: 50%;"><h4 style="text-align: right;">R$ {{ number_format($imovel->valorvenda, 2, ',', '.') }}</h4></div>
                             </div>
                             @endif
-                            <button class="btn btn-primary w-100" type="button">Entrar em Contato</button>
+                            @if ($entrouContato == false)                            
+                            <button class="btn btn-primary w-100" type="button" onclick="mostrarPopup()">Entrar em Contato</button>           
+                            @else
+                            <button class="btn btn-primary w-100" type="button" disabled>Você já entrou em contato</button>       
+                            @endif          
                         </div>
                     </div>
                     <div style="padding: 12px;">
@@ -197,6 +201,39 @@
                 </div>
             </div>
         </section>
+        <div id="contatoPopup" class="popup-container" style="display:none;">
+            <div class="popup-content">
+                <span class="close-btn" onclick="fecharPopup()">&times;</span>
+                <h2>Entrar em Contato</h2>                
+                <form action="/anuncio/contato" method="POST">
+                    @csrf <!-- Token CSRF para segurança -->
+                    @if ($imovel->islocation == true && $imovel->isvenda == true)                    
+                    <p style="text-align: left;">Selecione o tipo de negócio</p>  
+                    <select class="form-select" name="tiponegocio" id="tiponegocio" required> 
+                        <option  value="Comprar">Comprar</option>      
+                        <option  value="Alugar">Alugar</option>                
+                     </select>
+                    <br>
+                    @endif
+                    <input name="idimovel" value="{{$imovel->id}}" style="display: none"></input>     
+                    <p style="text-align: left">Insira uma mensagem para o dono do imóvel</p>               
+                    <textarea class="form-control" rows="5" placeholder="Escreva uma mensagem..." required></textarea>
+                    <button class="btn btn-secondary" type="button" onclick="fecharPopup()" style="margin-top: 10px;width: 45%;">Cancelar</button>
+                    <button class="btn btn-secondary" type="submit" style="margin-top: 10px;width: 45%;">Enviar</button>
+                </form>
+            </div>
+        </div>
     </main>
+
+    <script>
+        function fecharPopup() {
+            document.getElementById('contatoPopup').style.display = 'none';
+        }
+
+        function mostrarPopup() {
+            document.getElementById('contatoPopup').style.display = 'block';
+        }
+    </script>
+
     <x-imovel.footer/>
 </x-imovel.nav>

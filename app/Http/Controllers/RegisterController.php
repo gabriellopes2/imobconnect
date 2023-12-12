@@ -9,14 +9,18 @@ use App\Models\Pessoa;
 use App\Models\User;
 use App\Models\TipoContato;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {
     public function store(Request $request)
-    {        
-        $teste = json_encode($request->all());
+    {       
+        
+        DB::beginTransaction();
+        try{              
 
         $endereco = new Endereco();
         $endereco->cep = $request->cep;
@@ -35,21 +39,26 @@ class RegisterController extends Controller
 
         $pessoa = new Pessoa();
         $pessoa->nome = $request->nome;
-        $pessoa->cpf = str_replace(['.', '-'], '', $request->cpf);
-        $pessoa->cnpj = str_replace(['.', '/', '-'], '', $request->cnpj);
+        $pessoa->cpf = preg_replace('/[^0-9]/', '', $request->cpf);
+        $pessoa->cnpj = preg_replace('/[^0-9]/', '', $request->cnpj);
         $pessoa->datanascimento = $request->data_nascimento;
-        $pessoa->telefone = $request->telefone;
-        $pessoa->razaosocial = $request->razao_social;
-        $pessoa->nomefantasia = $request->nome_fantasia;
+        $pessoa->telefone = preg_replace('/[^0-9]/', '', $request->telefone);
+        $pessoa->razaosocial = empty($request->razao_social) ? null : $request->razao_social;
+        $pessoa->nomefantasia = empty($request->nome_fantasia) ? null : $request->nome_fantasia;
         $pessoa->isproprietario = $request->has('vendedor');
         $pessoa->idendereco = $endereco->id;
         $pessoa->idusuario = $usuario->id;
         $pessoa->save();
+    
+        DB::commit();
+        }
+        catch (\Exception $e) {
+            DB::rollback();
+            return to_route('register');
+        }
         
         
-        //return $teste;
         return to_route('home');
-        //    ->with('mensagem.sucesso', "Imóvel adicionado com sucesso");
    
    
     }

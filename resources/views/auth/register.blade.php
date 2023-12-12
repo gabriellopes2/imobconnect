@@ -103,9 +103,8 @@
             @enderror
         </div>
 
-
         <div class="input-group mb-3">
-            <input type="text" name="telefone" id="telefone" class="form-control @error('telefone') is-invalid @enderror"
+            <input type="tel" name="telefone" id="telefone" class="form-control @error('telefone') is-invalid @enderror"
                    value="{{ old('telefone') }}" placeholder="{{ __('Telefone') }}" required>
 
             <div class="input-group-append">
@@ -140,7 +139,7 @@
 
         <div class="input-group mb-3">
             <input type="text" name="cnpj" id="cnpj" class="form-control @error('cnpj') is-invalid @enderror"
-                   value="{{ old('cnpj') }}" placeholder="{{ __('CNPJ') }}" required>
+                   value="{{ old('cnpj') }}" placeholder="{{ __('CNPJ') }}">
 
             <div class="input-group-append">
                 <div class="input-group-text">
@@ -260,9 +259,25 @@
                 numericOnly: true
             });
 
+            // Máscara correta para o telefone
+            new Cleave('#telefone', {
+                delimiters: ['(', ') ', '-'],
+                blocks: [0, 2, 5, 4],
+                numericOnly: true
+            });
+
+
             document.getElementById('salvarContato').addEventListener('click', function () {
                 document.querySelector('#contatoSection form').reset();
             });
+
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelector('form').addEventListener('submit', function () {
+                // Remova a máscara do campo de CPF
+                var cpfField = document.querySelector('#cpf');
+                cpfField.value = cpfField.value.replace(/[^\d]/g, '');
+                });
+             });
 
             document.getElementById('gridContatos').addEventListener('click', function (event) {
                 if (event.target.classList.contains('editarContato')) {
@@ -273,6 +288,6 @@
                     // ...
                 }
             });
-
+        });
     </script>
 @stop

@@ -31,7 +31,8 @@ class Imovel extends Model
         'valoraluguel',
         'valorvenda',
         'ativo',
-        'titulo'
+        'titulo',
+        'disponivel'
     ];
     
     public function tipo()
@@ -47,6 +48,11 @@ class Imovel extends Model
     public function imagens()
     {
         return $this->hasMany(ImovelImagem::class, 'idimovel');
+    }
+
+    public function interessados()
+    {
+        return $this->hasMany(Interessado::class, 'idimovel');
     }
 
     public function detalheImovel()

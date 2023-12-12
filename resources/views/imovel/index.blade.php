@@ -25,7 +25,7 @@
 <div class="card">
     <div class="card-header">
         <i class="fa fa-list"></i>
-        <h4>Listagem de Imóveis</h4>
+        <h4>Aprovação de Imóveis</h4>
         <hr class="m-b-5">
     </div>
 
@@ -36,7 +36,7 @@
                 <form method="GET" action="{{ route('imovel.index') }}">
                     <div class="input-group mb-3">
                         <input class="form-control" name="search" value="{{ request('search') ?? '' }}"
-                            placeholder="Pesquisar por nome ou descrição..." />
+                            placeholder="Pesquisar por vendedor..." />
                         <div class="input-group-append">
                             <button class="btn btn-info" type="submit">
                                 <i class="fa fa-search"></i> Buscar
@@ -44,12 +44,6 @@
                         </div>
                     </div>
                 </form>
-            </div>
-
-            <div class="col-md-6 text-right">
-                <a href="{{ route('imovel.create') }}" class="btn btn-info">
-                    <i class="fa fa-plus"></i> Novo Imóvel
-                </a>
             </div>
 
             <hr>
@@ -66,7 +60,7 @@
                             <th>Venda</th>
                             <th>Valor do aluguel</th>
                             <th>Valor da venda</th>
-                            <th class="text-center">Situação</th>
+                            <th>Vendedor</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -74,11 +68,11 @@
                         <tr>
                             <td class="text-center">
 
-                                <a class="btn btn-success" href="">
-                                    <i class="fa fa-edit"></i>
+                                <a class="btn btn-success" href="/imovel/{{$imovel->id}}/aprovar">
+                                    <i class="fa fa-check"></i>
                                 </a>
 
-                                <form action="" method="POST">
+                                <form action="/imovel/{{$imovel->id}}/delete" method="POST">
 
                                     @csrf
                                     @method('DELETE')
@@ -94,7 +88,7 @@
                             <td>{{ icon_status($imovel->isvenda) }}</td>
                             <td>R$ {{ $imovel->valoraluguel }}</td>
                             <td>@if (isset($imovel->valorvenda)) R$ {{ $imovel->valorvenda }} @else - @endif</td>
-                            <td>{{ icon_status($imovel->ativo) }}</td>
+                            <td>{{$imovel->pessoa->nome}}</td>
                             
                         </tr>
                         @empty

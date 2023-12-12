@@ -41,6 +41,11 @@ class Pessoa extends Model
         return $this->hasMany(Imovel::class, 'idpessoa');
     }
 
+    public function interessados()
+    {
+        return $this->hasMany(Interessado::class, 'idpessoa');
+    }
+
     public function usuario()
     {
         return $this->belongsTo(User::class, 'idusuario', 'id');

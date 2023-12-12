@@ -1,90 +1,94 @@
 <x-imovel.nav>
     <main class="page landing-page">
+    <form id="filtroForm" action="{{ route('anuncio.anuncios') }}" method="GET">
         <div class="filter-container" style="margin-right: 40px;margin-left: 40px;">
+            
+              <div class="filter-item">
+				<label for="tipoanuncio">Tipo de Anúncio</label>
+				<select class="form-select" id="tipoanuncio" name="tipoanuncio">
+                    <option value="">Ambos</option> 
+                    <option value="Venda" {{ (isset($filtro['tipoanuncio']) && $filtro['tipoanuncio'] == "Venda") ? 'selected' : '' }}>Venda</option> 
+                    <option value="Aluguel" {{ (isset($filtro['tipoanuncio']) && $filtro['tipoanuncio'] == "Aluguel") ? 'selected' : '' }}>Aluguel</option>                    
+				</select>
+			  </div>
 			  <div class="filter-item">
-				<label for="propertyType">Tipo do imóvel</label>
-				<select class="form-select" id="propertyType" name="propertyType">
+				<label for="idtipoimovel">Tipo do imóvel</label>
+				<select class="form-select" id="idtipoimovel" name="idtipoimovel">
+                    <option value="">Selecionar</option> 
                    @foreach ($allTipoImoveis as $tipoImovel)
-                       <option value="{{$tipoImovel->id}}">{{$tipoImovel->descricao}}</option>                       
+                    <option value="{{$tipoImovel->id}}" {{ (isset($filtro['idtipoimovel']) && $filtro['idtipoimovel'] == $tipoImovel->id) ? 'selected' : '' }}>
+                        {{$tipoImovel->descricao}}
+                    </option>                      
                    @endforeach
 				</select>
 			  </div>
 			  <div class="filter-item">
-				<label for="cidade">Cidade</label>
-				<select class="form-select" id="cidade" name="cidade">
-				  <option value="apartment">Lajeado</option>
-				  <option value="house">Estrela</option>
-				  <option value="studio">Porto Alegre</option>
+				<label for="cidade">Cidade</label>                
+				<select class="form-select" id="cidade" name="idcidade">
+                    <option value="">Selecionar</option> 
+                    @foreach ($cidades as $cidade)
+                        <option value="{{$cidade->id}}" {{ (isset($filtro['idcidade']) && $filtro['idcidade'] == $cidade->id) ? 'selected' : '' }}>
+                            {{$cidade->descricao}}
+                        </option>                       
+                    @endforeach				  
 				</select>
 			  </div>
 			  <div class="filter-item">
 				<label for="bairro">Bairro</label>
-				<select class="form-select" id="bairro" name="bairro">
-				  <option value="apartment">Centro</option>
-				  <option value="house">Montanha</option>
-				  <option value="studio">Olarias</option>
-				</select>
+				<input class="form-control" type="text" id="bairro" name="bairro" value="{{ isset($filtro['bairro']) ? $filtro['bairro'] : '' }}">
 			  </div>
 			  <div class="filter-item">
-				<label for="quartos">Quartos</label>
-				<select class="form-select" id="quartos" name="quartos">
-                    @for($i = 1; $i <= $imoveis->pluck('detalheImovel.numeroquartos')->max(); $i++)
-                    <option value="{{$i}}">{{$i}}</option>
-                    @endfor
-				</select>
-			  </div>
-			  <div class="filter-item">
-				<label for="vaga">Vagas</label>
-				<select class="form-select" id="vaga" name="vaga">
-                    @for($i = 1; $i <= $imoveis->pluck('detalheImovel.numerodevagas')->max(); $i++)
-                    <option value="{{$i}}">{{$i}}</option>
-                    @endfor
-				</select>
-			  </div>
-			<div class="filter-item">
-			  <label for="range">Valor de Venda</label>
-			  <div class="range-slider">
-                @php                                
-                    $imoveisVenda = $imoveis->filter(function ($imovel) {
-                        return $imovel->isvenda === true;
-                    });
+				<label for="numeroquartos">Quartos</label>
+				<select class="form-select" id="numeroquartos" name="numeroquartos" value="{{ isset($filtro['numeroquartos']) ? $filtro['numeroquartos'] : '' }}">
+                    <option value="">Selecionar</option> 
+                    @for($i = 1; $i <= $numeroMaxQuartos; $i++)
 
-                    $maxPreco = round($imoveisVenda->max('valorvenda') / 5000, 0, PHP_ROUND_HALF_UP) * 5000;
-                    $minPreco = round($imoveisVenda->min('valorvenda') / 5000, 0, PHP_ROUND_HALF_DOWN) * 5000;
-                @endphp
-                
-				<input type="range" id="lower" class="lower venda" min="{{$minPreco}}" max="{{$maxPreco}}" value="{{$minPreco}}" step="5000" oninput="updateSlider(this)">
-				<input type="range" id="upper" class="upper venda" min="{{$minPreco}}" max="{{$maxPreco}}" value="{{$maxPreco}}" step="5000" oninput="updateSlider(this)">
+                    <option value="{{$i}}" {{ (isset($filtro['numeroquartos']) && $filtro['numeroquartos'] == $i) ? 'selected' : '' }}>
+                        {{$i}}
+                    </option>
+
+                    @endfor
+				</select>
+			  </div>
+			  <div class="filter-item">
+				<label for="numerodevagas">Vagas</label>
+				<select class="form-select" id="numerodevagas" name="numerodevagas">
+                    <option value="">Selecionar</option> 
+                    @for($i = 1; $i <= $numeroMaxVagas; $i++)
+                    <option value="{{$i}}" {{ (isset($filtro['numerodevagas']) && $filtro['numerodevagas'] == $i) ? 'selected' : '' }}>{{$i}}</option>
+                    @endfor
+				</select>
+			  </div>
+              <div class="filter-item">
+			  <label for="range">Valor de Venda</label>
+			  <div class="range-slider">                
+				<input type="range" name="valorminvenda" id="lower" class="lower venda" min="{{$minPrecoVenda}}" max="{{$maxPrecoVenda}}" value="{{ isset($filtro['valorminvenda']) ? $filtro['valorminvenda'] : $minPrecoVenda }}" step="5000" oninput="updateSlider(this)">
+				<input type="range" name="valormaxvenda" id="upper" class="upper venda" min="{{$minPrecoVenda}}" max="{{$maxPrecoVenda}}" value="{{ isset($filtro['valormaxvenda']) ? $filtro['valormaxvenda'] : $maxPrecoVenda}}" step="5000" oninput="updateSlider(this)">
 			  </div>
 			  <div class="slider-labels" style="padding-top:10px">
-				  <span id="lower-value-venda">R$40000</span> - <span id="upper-value-venda">R$200000</span>
-				</div>
-			</div>
+				  <span id="lower-value-venda">R$40000</span><br><span id="upper-value-venda">R$200000</span>
+				</div>            
+			    </div>
 
             <div class="filter-item">
 			  <label for="range">Valor de Aluguel</label>
 			  <div class="range-slider">
-                @php                                
-                    $imoveisAluguel = $imoveis->filter(function ($imovel) {
-                        return $imovel->islocation === true;
-                    });
-
-                    $maxPrecoAluguel = round($imoveisAluguel->max('valoraluguel') / 100, 0, PHP_ROUND_HALF_UP) * 100;
-                    $minPrecoAluguel = round($imoveisAluguel->min('valoraluguel') / 100, 0, PHP_ROUND_HALF_DOWN) * 100;
-                @endphp
-                
-				<input type="range" id="lower2" class="lower aluguel" min="{{$minPrecoAluguel}}" max="{{$maxPrecoAluguel}}" value="{{$minPrecoAluguel}}" step="100" oninput="updateSlider(this)">
-				<input type="range" id="upper2" class="upper aluguel" min="{{$minPrecoAluguel}}" max="{{$maxPrecoAluguel}}" value="{{$maxPrecoAluguel}}" step="100" oninput="updateSlider(this)">
+				<input type="range" name="valorminaluguel" id="lower2" class="lower aluguel" min="{{$minPrecoAluguel}}" max="{{$maxPrecoAluguel}}" value="{{ isset($filtro['valorminaluguel']) ? $filtro['valorminaluguel'] : $minPrecoAluguel}}" step="100" oninput="updateSlider(this)">
+				<input type="range" name="valormaxaluguel" id="upper2" class="upper aluguel" min="{{$minPrecoAluguel}}" max="{{$maxPrecoAluguel}}" value="{{ isset($filtro['valormaxaluguel']) ? $filtro['valormaxaluguel'] : $maxPrecoAluguel}}" step="100" oninput="updateSlider(this)">
 			  </div>
 			  <div class="slider-labels" style="padding-top:10px">
-				  <span id="lower-value-aluguel">R${{$minPrecoAluguel}}</span> - <span id="upper-value-aluguel">R${{$maxPrecoAluguel}}</span>
+				  <span id="lower-value-aluguel">R${{$minPrecoAluguel}}</span><br><span id="upper-value-aluguel">R${{$maxPrecoAluguel}}</span>
 				</div>
 			</div>
 
 
             
-			<div class="filter-item filter-button"><span>Buscar</span></div>
+			<button type="submit" class="filter-item filter-button">
+                <span>Buscar</span>
+            </button>
+        
 		</div>
+        </form>
         <section style="padding: 0px;margin: 10px;margin-right: 40px;margin-left: 40px;">
             <!--<div data-reflow-type="product-search">
 				<div class="reflow-product-search">
@@ -121,7 +125,7 @@
                                     <h5 class="ref-name" style="font-weight: bold;">{{ $imovel->titulo }}</h5>
                                     <div style="display: flex; align-items: center; margin-bottom: 15px;">
                                         <img src="/img/icon-localizacao.png" alt="localizacao" width="16" height="16">
-                                        <span>{{$imovel->endereco->cidade->descricao}}, {{$imovel->endereco->cidade->uf}}</span>
+                                        <span>{{$imovel->endereco->bairro}}, {{$imovel->endereco->cidade->descricao}}, {{$imovel->endereco->cidade->uf}}</span>
                                     </div>
                                     <!--<p class="ref-excerpt">{{ $imovel->detalheimovel->descricao }}</p>-->
                                     <p style="font-size: 14px; line-height: 0.7; display: flex; flex-wrap: wrap; gap: 15px;">
@@ -164,7 +168,7 @@
 				</div>
 			</div>
         </section>
-        
+        <script src="/js/personalizado.js"></script>        
     </main>
     <x-imovel.footer/>
 </x-imovel.nav>

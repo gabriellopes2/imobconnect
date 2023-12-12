@@ -18,19 +18,38 @@
                                     </div>
                                 @endif
                                 <div class="ref-product-data">
-                                    <div class="ref-product-info">
+                                    <div class="ref-product-info" style="display: flex; flex-direction: column;">
                                         <h5 class="ref-name">{{$imovel->titulo}}</h5>
-                                        <p class="ref-excerpt">{{$imovel->detalheimovel->descricao}}</p>                                        
-                                    </div>
+                                        <p class="ref-excerpt">{{$imovel->detalheimovel->descricao}}</p>   
+                                        
+                                        @if ($imovel->disponivel == false)
+                                        <div style="margin-top: auto;">                                            
+                                            @foreach ($imovel->interessados as $interessado)
+                                                @if ($interessado->comprou == true)
+                                                    @if ($interessado->tiponegocio == "Alugar")                                                        
+                                                    <strong>Alugado para: {{ $interessado->pessoa->nome }}</strong> 
+                                                    @else
+                                                    <strong>Vendido para: {{ $interessado->pessoa->nome }}</strong>                                                                                                                    
+                                                    @endif                                                        
+                                                    @break
+                                                @endif
+                                            @endforeach             
+                                        </div>
+                                        @endif
+                                    </div>                                    
                                 </div>
 
-                                <div class="ref-addons" style="display: flex; flex-direction: column; align-items: stretch;">
-                                    <a class="ref-button preview-toggle" href="#" style="text-align: center; padding: 10px; margin-bottom: 10px;">Editar Imóvel</a>
-                                    <a class="ref-button preview-toggle" onclick="toggleGrid('grid{{$loop->index}}', this)" href="#" style="text-align: center; padding: 10px;">Mostrar Interessados</a>
+                                <div class="ref-addons" style="display: flex; flex-direction: column; align-items: stretch; gap:5px;">
+                                    <a class="btn btn-primary w-100" href="/anuncio/editar/{{$imovel->id}}">Editar Imóvel</a>   
+                                    @if (count($imovel->interessados) > 0)
+                                    <a class="ref-button preview-toggle" onclick="toggleGrid('grid{{$loop->index}}', this)" style="text-align: center; padding: 10px;">Mostrar Interessados</a>
+                                    @else
+                                    <button class="btn btn-primary w-100" type="button" disabled>Sem Interessados</button>   
+                                    @endif
                                 </div>
                             </div>  
 
-                            <div class="ref-grid" id="grid{{$loop->index}}" style="display: grid; grid-template-rows: repeat(3, auto); gap: 0px; padding: 0px;">
+                            <div class="ref-grid" id="grid{{$loop->index}}" style="display: grid; grid-template-rows: repeat(4, auto); gap: 0px; padding: 0px;">
                                 <!-- Linha 1 -->
                                 <div class="grid-row" style="background-color: #f0f0f0;">
                                     <!-- Outras colunas -->
@@ -38,29 +57,30 @@
                                     <div class="grid-item">Telefone</div>
                                     <div class="grid-item">Email</div>
                                 </div>
+                                @foreach($imovel->interessados as $interessado)                                
                                 <div class="grid-row" style="background-color: #f0f0f0;">
                                     <!-- Outras colunas -->
-                                    <div class="grid-item">Everton</div>
-                                    <div class="grid-item">(99) 9999-9999</div>
-                                    <div class="grid-item">everton@mail.com</div>
+                                    <div class="grid-item">{{$interessado->pessoa->nome}}</div>
+                                    <div class="grid-item">{{$interessado->pessoa->telefone}}</div>
+                                    <div class="grid-item">{{$interessado->pessoa->usuario->email}}</div>
                                     <!-- Última coluna -->
                                     <div class="grid-item">
-                                    <!-- O botão é ocultado até que a linha seja passada com o mouse -->
-                                    <button class="define-comprador">Definir como comprador</button>
+                                        @if ($imovel->disponivel)
+                                        <form action="/anuncio/definecomprador" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="idinteressado" value="{{$interessado->id}}">
+                                            <button type="submit" class="define-comprador">Definir como 
+                                                @if ($interessado->tiponegocio == "Comprar")
+                                                    comprador
+                                                @else
+                                                    inquilino
+                                                @endif
+                                            </button>
+                                        </form>
+                                        @endif
                                     </div>
                                 </div>
-                                <div class="grid-row" style="background-color: #f0f0f0;">
-                                    <!-- Outras colunas -->
-                                    <div class="grid-item">Everton</div>
-                                    <div class="grid-item">(99) 9999-9999</div>
-                                    <div class="grid-item">everton@mail.com</div>
-                                    <!-- Última coluna -->
-                                    <div class="grid-item">
-                                    <!-- O botão é ocultado até que a linha seja passada com o mouse -->
-                                    <button class="define-comprador">Definir como comprador</button>
-                                    </div>
-                                </div>
-
+                                @endforeach
                             </div>
                         </div>
                         @endforeach
@@ -138,4 +158,5 @@
     max-height: 500px; /* Altura máxima esperada para a grid (ajuste conforme necessário) */
   }
 </style>
+<x-imovel.footer/>
 </x-imovel.nav>
